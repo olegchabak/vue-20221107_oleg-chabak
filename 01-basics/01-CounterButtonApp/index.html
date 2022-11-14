@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
@@ -6,7 +6,7 @@
   </head>
   <body>
     <div id="app">
-      <button type="button">0</button>
+      <button type="button" @click.prevent="increment">{{ counter }}</button>
     </div>
 
     <script type="module" src="./script.js"></script>
