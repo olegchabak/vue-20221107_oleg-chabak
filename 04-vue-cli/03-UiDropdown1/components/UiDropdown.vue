@@ -1,18 +1,35 @@
 <template>
-  <div class="dropdown dropdown_opened">
-    <button type="button" class="dropdown__toggle dropdown__toggle_icon">
-      <ui-icon icon="tv" class="dropdown__icon" />
-      <span>Title</span>
+  <div class="dropdown" :class="{ dropdown_opened: dropdownOpened }">
+    <select
+      :value="modelValue"
+      style="position: absolute; visibility: hidden"
+      @change="$emit('update:modelValue', $event.target.value)"
+    >
+      <option v-for="option in options" :key="option.value" :value="option.value">{{ option.text }}</option>
+    </select>
+
+    <button
+      type="button"
+      class="dropdown__toggle"
+      :class="{ dropdown__toggle_icon: hasIcons }"
+      @click="toggleDropdown"
+    >
+      <ui-icon v-if="selectedOptionIcon" :icon="selectedOptionIcon" class="dropdown__icon" />
+      <span>{{ selectedOptionText }}</span>
     </button>
 
-    <div class="dropdown__menu" role="listbox">
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <ui-icon icon="tv" class="dropdown__icon" />
-        Option 1
-      </button>
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <ui-icon icon="tv" class="dropdown__icon" />
-        Option 2
+    <div v-show="dropdownOpened" class="dropdown__menu" role="listbox">
+      <button
+        v-for="option in options"
+        :key="option.value"
+        class="dropdown__item"
+        :class="{ dropdown__item_icon: hasIcons }"
+        role="option"
+        type="button"
+        @click.prevent="setOption(option.value)"
+      >
+        <ui-icon v-if="option.icon" :icon="option.icon" class="dropdown__icon" />
+        {{ option.text }}
       </button>
     </div>
   </div>
@@ -25,6 +42,50 @@ export default {
   name: 'UiDropdown',
 
   components: { UiIcon },
+
+  props: {
+    options: {
+      type: Array,
+      required: true,
+    },
+    modelValue: {
+      type: String,
+    },
+    title: {
+      type: String,
+      required: true,
+    },
+  },
+  emits: ['update:modelValue'],
+
+  data: () => ({
+    dropdownOpened: false,
+  }),
+
+  computed: {
+    hasIcons() {
+      return !!this.options.find((el) => el.icon);
+    },
+    selectedOption() {
+      return this.options.find((option) => option.value === this.modelValue);
+    },
+    selectedOptionText() {
+      return this.selectedOption?.text || this.title;
+    },
+    selectedOptionIcon() {
+      return this.selectedOption?.icon;
+    },
+  },
+
+  methods: {
+    toggleDropdown() {
+      this.dropdownOpened = !this.dropdownOpened;
+    },
+    setOption(value) {
+      this.$emit('update:modelValue', value);
+      this.toggleDropdown();
+    },
+  },
 };
 </script>
 
@@ -100,7 +161,7 @@ export default {
   right: auto;
   top: -1px;
   transform: translate3d(0px, 52px, 0px);
-  width: 100%;
+  width: calc(100% - 1px);
   will-change: transform;
   z-index: 95;
 }
@@ -119,6 +180,7 @@ export default {
   transition-property: background-color, border-color, color;
   outline: none;
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .dropdown__item:hover,
