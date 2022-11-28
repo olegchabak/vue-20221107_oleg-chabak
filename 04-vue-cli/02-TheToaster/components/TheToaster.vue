@@ -2,11 +2,10 @@
   <div class="toasts">
     <UiToast
       v-for="toast in toasts"
-      :id="toast.id"
       :key="toast.id"
       :type="toast.type"
       :message="toast.message"
-      @remove="remove"
+      @remove="remove(toast.id)"
     />
   </div>
 </template>
