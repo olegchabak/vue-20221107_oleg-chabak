@@ -23,10 +23,6 @@ export default {
       type: String,
       required: true,
     },
-    id: {
-      type: Number,
-      required: true,
-    },
   },
   emits: ['remove'],
   computed: {
@@ -35,7 +31,7 @@ export default {
   },
   methods: {
     remove() {
-      this.$emit('remove', this.id);
+      this.$emit('remove');
     },
   },
 };
