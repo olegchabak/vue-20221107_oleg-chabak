@@ -31,14 +31,26 @@ export const router = createRouter({
           name: 'meetup.description',
           props: true,
           component: () => import('../views/PageMeetupDescription'),
+          meta: {
+            saveScrollPosition: true,
+          },
         },
         {
           path: 'agenda',
           name: 'meetup.agenda',
           props: true,
           component: () => import('../views/PageMeetupAgenda'),
+          meta: {
+            saveScrollPosition: true,
+          },
         },
       ],
     },
   ],
+  scrollBehavior(to, from, savedPosition) {
+    if (to.meta.saveScrollPosition && from.meta.saveScrollPosition) return false;
+    if (savedPosition) return savedPosition;
+    if (to.hash) return { el: to.hash, top: -30 };
+    return { left: 0, top: 0 };
+  },
 });
