@@ -24,7 +24,7 @@ export default {
   }),
 
   unmounted() {
-    this.toasts.forEach((toast) => clearTimeout(toast.id));
+    Object.keys(this.toasts).forEach((toast) => clearTimeout(+toast));
   },
 
   methods: {
